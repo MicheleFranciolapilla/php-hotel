@@ -88,13 +88,13 @@
                 <tr>
                     <?php
                         $keys = array_keys($hotels[0]);
-                        var_dump($keys);
-                        var_dump(count($keys));
-                        for ($i = 0; $i < count($keys); $i++)
-                            if ($keys[$i] != "description")
-                                echo $keys[$i] . "<br>";
-                            else
-                                echo "Trovato il non voluto: " . $keys[$i] . "<br>";
+                        foreach ($keys as $item)
+                        {
+                            if ($item != "description")
+                            {
+                                echo "<th scope='col'>$item</th>";
+                            }
+                        }
                     ?> 
                 </tr>
             </thead>

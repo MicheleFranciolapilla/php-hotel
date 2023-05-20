@@ -88,22 +88,55 @@
                 <tr>
                     <?php
                         $keys = array_keys($hotels[0]);
-                        foreach ($keys as $index => $item)
+                        foreach ($keys as $index => $key)
                         {
                             if ($index == 0)
                             {
                                 echo "<th scope='col'>#</th>";
                             }
-                            if ($item != "description")
+                            if ($key != "description")
                             {
-                                echo "<th scope='col'>$item</th>";
+                                if ($key == "distance_to_center")
+                                {
+                                    $key .= " (Km)";
+                                }
+                                echo "<th scope='col'>$key</th>";
                             }
                         }
+                        unset($index);
+                        unset($key);
                     ?> 
                 </tr>
             </thead>
             <tboby>
-
+                <?php
+                foreach ($hotels as $hotel_index => $hotel)
+                {
+                    $parking = "Yes";
+                    if (!$hotel["parking"])
+                    {
+                        $parking = "No";
+                    }
+                    $echo_str = "<tr><th scope='row'>" . strval($hotel_index+1) . "</th>";
+                    foreach ($keys as $index => $key)
+                    {
+                        if ($key != "description")
+                        {
+                            if ($key == "parking")
+                            {
+                                $echo_str .= "<td>" . $parking . "</td>";
+                            }
+                            else
+                            {
+                                $echo_str .= "<td>$hotel[$key]</td>";
+                            }
+                        }
+                    }
+                    $echo_str .= "</tr>";
+                    // var_dump($echo_str);
+                    echo $echo_str;
+                }
+                ?>
             </tboby>
         </table>
     </main>

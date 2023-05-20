@@ -65,7 +65,6 @@
     //     echo "Parcheggio: " . $parking . "<br>";
     //     echo "----------------------------------------<br>";
     // }
-
 ?>
 
 <!DOCTYPE html>
@@ -82,8 +81,36 @@
     <header>
         <h1 class="text-center text-primary">Hotel - PHP</h1>
     </header>
-    <main>
-        <div id="table_container" class="row m-5">
+    <main class="row m-5">
+        <section id="form_section" class="col-3 p-2 border border-3 rounded-3 bg-info">
+            <h3 class="text-center text-black-50">Filtri</h3>
+            <form>
+                <div class="form-check border border-1 border-dark rounded-2 bg-light">
+                    <input id="parking_check" class="form-check-input mx-1" type="checkbox">
+                    <label for="parking_check" class="form-check-label">Go to parking check</label>
+                    <div id="parking_radiobuttons" class="form-check ps-5">
+                        <div>
+                            <input id="with_parking" class="form-check-input" type="radio" name="parking"  
+                                <?php
+                                    if (isset($parking) && $parking == "with") echo "checked";
+                                ?>
+                            value="with">
+                            <label for="with_parking" class="form-check-label">With Parking</label>
+                        </div>
+                        <div>
+                            <input id="without_parking" class="form-check-input" type="radio" name="parking"  
+                                <?php
+                                    if (isset($parking) && $parking == "without") echo "checked";
+                                ?>
+                            value="without">
+                            <label for="without_parking" class="form-check-label">Without Parking</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- <?php var_dump($parking); ?> -->
+            </form>
+        </section>
+        <section id="table_container" class="col-7 offset-1">
             <!-- Bootstrap table -->
             <table class="table table-dark table-striped">
                 <!-- Creazione dinamica del thead -->
@@ -124,10 +151,10 @@
                     foreach ($hotels as $hotel_index => $hotel)
                     {
                         // Assegnazione di dato stringa al campo "parcheggio"
-                        $parking = "Yes";
+                        $parking_str = "Yes";
                         if (!$hotel["parking"])
                         {
-                            $parking = "No";
+                            $parking_str = "No";
                         }
                         // Inizio costruzione dell'output con numero di riga
                         $echo_str = "<tr><th scope='row'>" . strval($hotel_index+1) . "</th>";
@@ -140,7 +167,7 @@
                                 // Frammento di output per chiave parcheggio
                                 if ($key == "parking")
                                 {
-                                    $echo_str .= "<td>" . $parking . "</td>";
+                                    $echo_str .= "<td>" . $parking_str . "</td>";
                                 }
                                 // Frammento di output per le altre chiavi
                                 else
@@ -157,8 +184,10 @@
                     ?>
                 </tboby>
             </table>
-        </div>
-            <span class="mx-5 p-2 border border-3 bg-warning">Campo "description" non visualizzato poichè ridondante!</span>
+            <span class="p-2 border border-3 bg-warning">Campo "description" non visualizzato poichè ridondante!</span>
+        </section>
     </main>
+    <!-- CDN per Bootstrap 5 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

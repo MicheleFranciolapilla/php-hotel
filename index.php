@@ -83,62 +83,82 @@
         <h1 class="text-center text-primary">Hotel - PHP</h1>
     </header>
     <main>
-        <table class="table">
-            <thead>
-                <tr>
+        <div id="table_container" class="row m-5">
+            <!-- Bootstrap table -->
+            <table class="table table-dark table-striped">
+                <!-- Creazione dinamica del thead -->
+                <thead>
+                    <tr>
+                        <?php
+                            // Si salvano in un array tutte le chiavi dei sotto-array (singolo hotel)
+                            $keys = array_keys($hotels[0]);
+                            foreach ($keys as $index => $key)
+                            {
+                                // Al primo giro di foreach vengono create due colonne: la colonna numerata e quella della key indirizzata
+                                // Creazione della colonna numerata
+                                if ($index == 0)
+                                {
+                                    echo "<th scope='col'>#</th>";
+                                }
+                                // Creazione della colonna indirizzata (escludendo "description" poichè ridondante)
+                                if ($key != "description")
+                                {
+                                    // Alla key della distanza dal centro si aggiunge l'unità di misura (Km)
+                                    if ($key == "distance_to_center")
+                                    {
+                                        $key .= " (Km)";
+                                    }
+                                    echo "<th scope='col'>$key</th>";
+                                }
+                            }
+                            // Si "distruggono" le variabili del foreach in via precauzionale
+                            unset($index);
+                            unset($key);
+                        ?> 
+                    </tr>
+                </thead>
+                <!-- Creazione dinamica del tbody con due foreach annidati -->
+                <tboby>
                     <?php
-                        $keys = array_keys($hotels[0]);
+                    // Primo foreach per settaggio stringhe e output
+                    foreach ($hotels as $hotel_index => $hotel)
+                    {
+                        // Assegnazione di dato stringa al campo "parcheggio"
+                        $parking = "Yes";
+                        if (!$hotel["parking"])
+                        {
+                            $parking = "No";
+                        }
+                        // Inizio costruzione dell'output con numero di riga
+                        $echo_str = "<tr><th scope='row'>" . strval($hotel_index+1) . "</th>";
+                        // Secondo foreach per costruzione output ed esclusione del campo ridondante
                         foreach ($keys as $index => $key)
                         {
-                            if ($index == 0)
-                            {
-                                echo "<th scope='col'>#</th>";
-                            }
+                            // Esclusione del campo ridondante
                             if ($key != "description")
                             {
-                                if ($key == "distance_to_center")
+                                // Frammento di output per chiave parcheggio
+                                if ($key == "parking")
                                 {
-                                    $key .= " (Km)";
+                                    $echo_str .= "<td>" . $parking . "</td>";
                                 }
-                                echo "<th scope='col'>$key</th>";
+                                // Frammento di output per le altre chiavi
+                                else
+                                {
+                                    $echo_str .= "<td>$hotel[$key]</td>";
+                                }
                             }
                         }
-                        unset($index);
-                        unset($key);
-                    ?> 
-                </tr>
-            </thead>
-            <tboby>
-                <?php
-                foreach ($hotels as $hotel_index => $hotel)
-                {
-                    $parking = "Yes";
-                    if (!$hotel["parking"])
-                    {
-                        $parking = "No";
+                        // Completamento dell'output
+                        $echo_str .= "</tr>";
+                        // Generazione rigo tabella mediante output
+                        echo $echo_str;
                     }
-                    $echo_str = "<tr><th scope='row'>" . strval($hotel_index+1) . "</th>";
-                    foreach ($keys as $index => $key)
-                    {
-                        if ($key != "description")
-                        {
-                            if ($key == "parking")
-                            {
-                                $echo_str .= "<td>" . $parking . "</td>";
-                            }
-                            else
-                            {
-                                $echo_str .= "<td>$hotel[$key]</td>";
-                            }
-                        }
-                    }
-                    $echo_str .= "</tr>";
-                    // var_dump($echo_str);
-                    echo $echo_str;
-                }
-                ?>
-            </tboby>
-        </table>
+                    ?>
+                </tboby>
+            </table>
+        </div>
+            <span class="mx-5 p-2 border border-3 bg-warning">Campo "description" non visualizzato poichè ridondante!</span>
     </main>
 </body>
 </html>

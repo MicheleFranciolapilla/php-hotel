@@ -88,8 +88,12 @@
                 <tr>
                     <?php
                         $keys = array_keys($hotels[0]);
-                        foreach ($keys as $item)
+                        foreach ($keys as $index => $item)
                         {
+                            if ($index == 0)
+                            {
+                                echo "<th scope='col'>#</th>";
+                            }
                             if ($item != "description")
                             {
                                 echo "<th scope='col'>$item</th>";
@@ -98,6 +102,9 @@
                     ?> 
                 </tr>
             </thead>
+            <tboby>
+
+            </tboby>
         </table>
     </main>
 </body>

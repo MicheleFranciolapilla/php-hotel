@@ -1,10 +1,13 @@
 <?php
 
+    // Variabili globali assegnatarie dei parametri di ricerca
     $parking = $_GET["parking"];
     $vote = $_GET["vote"];
+    // Variabili globali utilizzate per contare gli elementi validi (rispondenti ai parametri di ricerca) e per produrre il messaggio di output 
     $valid_items = 0;
     $message_str = "";
 
+    // Array multidimensionale contenente le informazioni sugli hotel
     $hotels = [
 
         [
@@ -45,6 +48,7 @@
 
     ];
 
+    // ******************** MILESTONE 1 *********************************
     // Array di numeri ordinali per elencare gli hotel nella Milestone 1
     // $numeral_array  = [
     //     'Primo',
@@ -70,6 +74,7 @@
     //     echo "Parcheggio: " . $parking . "<br>";
     //     echo "----------------------------------------<br>";
     // }
+    // ******************************************************************
 ?>
 
 <!DOCTYPE html>
@@ -170,60 +175,67 @@
                 <!-- Creazione dinamica del tbody con due foreach annidati -->
                 <tboby>
                     <?php
-                    if (isset($parking))
-                        $parking_bool = ($parking == "with");
-                    // Primo foreach per settaggio stringhe e output
-                    foreach ($hotels as $hotel_index => $hotel)
-                    {
-                        // Assegnazione di dato stringa al campo "parcheggio"
-                        $parking_str = "Yes";
-                        if (!$hotel["parking"])
+                        // Nel caso in cui la ricerca preveda un filtro sulla presenza del parcheggio si setta correttamente il valore booleano della variabile di controllo
+                        if (isset($parking))
+                            $parking_bool = ($parking == "with");
+                        // Primo foreach per settaggio stringhe e output
+                        foreach ($hotels as $hotel_index => $hotel)
                         {
-                            $parking_str = "No";
-                        }
-                        // Inizio costruzione dell'output con numero di riga
-                        $echo_str = "<tr><th scope='row'>" . strval($hotel_index+1) . "</th>";
-                        // Secondo foreach per costruzione output ed esclusione del campo ridondante
-                        foreach ($keys as $index => $key)
-                        {
-                            // Esclusione del campo ridondante
-                            if ($key != "description")
+                            // Assegnazione di dato stringa al campo "parcheggio"
+                            $parking_str = "Yes";
+                            if (!$hotel["parking"])
                             {
-                                // Frammento di output per chiave parcheggio
-                                if ($key == "parking")
+                                $parking_str = "No";
+                            }
+                            // Inizio costruzione dell'output con numero di riga
+                            $echo_str = "<tr><th scope='row'>" . strval($hotel_index+1) . "</th>";
+                            // Secondo foreach per costruzione output ed esclusione del campo ridondante
+                            foreach ($keys as $index => $key)
+                            {
+                                // Esclusione del campo ridondante
+                                if ($key != "description")
                                 {
-                                    $echo_str .= "<td>" . $parking_str . "</td>";
-                                }
-                                // Frammento di output per le altre chiavi
-                                else
-                                {
-                                    $echo_str .= "<td>$hotel[$key]</td>";
+                                    // Frammento di output per chiave parcheggio
+                                    if ($key == "parking")
+                                    {
+                                        $echo_str .= "<td>" . $parking_str . "</td>";
+                                    }
+                                    // Frammento di output per le altre chiavi
+                                    else
+                                    {
+                                        $echo_str .= "<td>$hotel[$key]</td>";
+                                    }
                                 }
                             }
+                            // Completamento dell'output
+                            $echo_str .= "</tr>";
+                            // Settaggio delle condizioni che producono un output valido
+                            // Prima condizione valida: nessun filtro attivo, quindi si visualizzaranno tutti gli elementi
+                            $condition1 = (!isset($parking) && !isset($vote));
+                            // Seconda condizione valida: entrambi i filtri sono settati e dunque si visualizzeranno solo gli elementi che soddisfano le due condizioni di ricerca
+                            $condition2 = (isset($parking) && ($hotel["parking"] == $parking_bool) && isset($vote) && ($hotel["vote"] >= $vote));
+                            // Terza e quarta condizione valida: solo uno dei due filtri è settato
+                            $condition3 = (isset($parking) && ($hotel["parking"] == $parking_bool) && !isset($vote));
+                            $condition4 = (!isset($parking) && isset($vote) && ($hotel["vote"] >= $vote));
+                            // Si produce un output solo se una delle 4 condizioni di validità risulti soddisfatta
+                            if  ($condition1 || $condition2 || $condition3 || $condition4)
+                            {
+                                // Generazione rigo tabella mediante output
+                                echo $echo_str;
+                                // Incremento del contatore degli output validi
+                                $valid_items++;
+                            }
                         }
-                        // Completamento dell'output
-                        $echo_str .= "</tr>";
-
-                        $condition1 = (!isset($parking) && !isset($vote));
-                        $condition2 = (isset($parking) && ($hotel["parking"] == $parking_bool) && isset($vote) && ($hotel["vote"] >= $vote));
-                        $condition3 = (isset($parking) && ($hotel["parking"] == $parking_bool) && !isset($vote));
-                        $condition4 = (!isset($parking) && isset($vote) && ($hotel["vote"] >= $vote));
-
-                        if  ($condition1 || $condition2 || $condition3 || $condition4)
-                        {
-                            // Generazione rigo tabella mediante output
-                            echo $echo_str;
-                            $valid_items++;
-                        }
-                    }
                     ?>
                 </tboby>
             </table>
             <?php
+                // A seconda della presenza o meno di almeno un output valido si setta un messaggio di warning
                 if ($valid_items != 0)
                     $message_str = 'Campo "description" non visualizzato poichè ridondante!';
                 else
-                $message_str = 'La ricerca con i filtri impostati non ha prodotto risultati!';
+                    $message_str = 'La ricerca con i filtri impostati non ha prodotto risultati!';
+                // Output del messaggio di warning
                 echo '<span class="p-2 border border-3 bg-warning">' . $message_str . '</span>';
             ?>
         </section>

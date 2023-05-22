@@ -76,7 +76,6 @@
     //     echo "----------------------------------------<br>";
     // }
     // ******************************************************************
-    var_dump($searching);
 ?>
 
 <!DOCTYPE html>
@@ -109,10 +108,8 @@
         <section id="form_section" class="col-3 p-2 border border-3 rounded-3 bg-info">
             <h3 class="text-center text-black-50">Filters</h3>
             <form id="form_id" action="index.php" method="GET" onsubmit="set_searching()">
-                <!-- Sotto sezione checkbox e radiobuttons per filtro parcheggio -->
-                <!-- <div class="form-check border border-1 border-dark rounded-2 bg-light"> -->
-                    <!-- <input id="parking_check" class="form-check-input mx-1" type="checkbox"> -->
-                    <!-- <label for="parking_check" class="form-check-label">Go to filter for "parking"</label> -->
+                <!-- Sotto sezione radiobuttons per filtro parcheggio -->
+                <div class="form-check border border-1 border-dark rounded-2 bg-light">
                     <div id="parking_radiobuttons" class="form-check ps-5">
                         <div>
                             <input id="with_parking" class="form-check-input" type="radio" name="parking"  
@@ -131,25 +128,18 @@
                             <label for="without_parking" class="form-check-label">Without Parking</label>
                         </div>
                     </div>
-                <!-- Sotto sezione checkbox e input per filtro voto -->
-                <!-- </div> -->
-                <!-- <div class="form-check my-2 border border-1 border-dark rounded-2 bg-light"> -->
-                    <!-- <input id="vote_check" class="form-check-input mx-1" type="checkbox"> -->
-                    <!-- <label for="vote_check" class="form-check-label">Go to filter for "vote"</label> -->
-                    <div class="form-check ps-5 my-5">
-                        <input id="vote_input" class="form-check-input" type="number" min="0" max="5" step="0.5" name="vote" value = "<?php if (isset($vote)) echo $vote; ?>">
-                        <label for="vote_input" class="form-check-label mx-2">Vote</label>
-                    </div>
-                    <input id="fake" type="text" name="searching">
-                <!-- </div> -->
+                </div>
+                <!-- Sotto sezione input per filtro voto -->
+                <div class="form-check ps-5 my-5">
+                    <input id="vote_input" class="form-check-input border border-1 border-dark rounded-2" type="number" min="0" max="5" step="0.5" name="vote" value = "<?php if (isset($vote)) echo $vote; ?>">
+                    <label for="vote_input" class="form-check-label mx-2 mt-1">Vote</label>
+                </div>
+                <input id="fake" type="text" name="searching">
                 <!-- Pulsante submit -->
                 <div class="d-flex justify-content-center my-3">
                     <button type="submit">Show table</button>
                 </div>
             </form>
-            <!-- <?php
-                var_dump($parking);
-            ?> -->
         </section>
         <?php
             if (isset($searching) && $searching == "searching"):

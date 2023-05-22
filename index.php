@@ -1,5 +1,10 @@
 <?php
 
+    $parking = $_GET["parking"];
+    $vote = $_GET["vote"];
+    $valid_items = 0;
+    $message_str = "";
+
     $hotels = [
 
         [
@@ -75,6 +80,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Link a Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Link al foglio di stile -->
+    <link rel="stylesheet" href="./style.css">
     <title>Hotel - PHP</title>
 </head>
 <body>
@@ -83,11 +90,12 @@
     </header>
     <main class="row m-5">
         <section id="form_section" class="col-3 p-2 border border-3 rounded-3 bg-info">
-            <h3 class="text-center text-black-50">Filtri</h3>
-            <form>
-                <div class="form-check border border-1 border-dark rounded-2 bg-light">
-                    <input id="parking_check" class="form-check-input mx-1" type="checkbox">
-                    <label for="parking_check" class="form-check-label">Go to parking check</label>
+            <h3 class="text-center text-black-50">Filters</h3>
+            <form id="form_id" action="index.php" method="GET">
+                <!-- Sotto sezione checkbox e radiobuttons per filtro parcheggio -->
+                <!-- <div class="form-check border border-1 border-dark rounded-2 bg-light"> -->
+                    <!-- <input id="parking_check" class="form-check-input mx-1" type="checkbox"> -->
+                    <!-- <label for="parking_check" class="form-check-label">Go to filter for "parking"</label> -->
                     <div id="parking_radiobuttons" class="form-check ps-5">
                         <div>
                             <input id="with_parking" class="form-check-input" type="radio" name="parking"  
@@ -106,9 +114,24 @@
                             <label for="without_parking" class="form-check-label">Without Parking</label>
                         </div>
                     </div>
+                <!-- Sotto sezione checkbox e input per filtro voto -->
+                <!-- </div> -->
+                <!-- <div class="form-check my-2 border border-1 border-dark rounded-2 bg-light"> -->
+                    <!-- <input id="vote_check" class="form-check-input mx-1" type="checkbox"> -->
+                    <!-- <label for="vote_check" class="form-check-label">Go to filter for "vote"</label> -->
+                    <div class="form-check ps-5 my-5">
+                        <input id="vote_input" class="form-check-input" type="number" min="0" max="5" step="0.5" name="vote" value = "<?php if (isset($vote)) echo $vote; ?>">
+                        <label for="vote_input" class="form-check-label mx-2">Vote</label>
+                    </div>
+                <!-- </div> -->
+                <!-- Pulsante submit -->
+                <div class="d-flex justify-content-center my-3">
+                    <button type="submit">Show table</button>
                 </div>
-                <!-- <?php var_dump($parking); ?> -->
             </form>
+            <!-- <?php
+                var_dump($parking);
+            ?> -->
         </section>
         <section id="table_container" class="col-7 offset-1">
             <!-- Bootstrap table -->
@@ -147,6 +170,8 @@
                 <!-- Creazione dinamica del tbody con due foreach annidati -->
                 <tboby>
                     <?php
+                    if (isset($parking))
+                        $parking_bool = ($parking == "with");
                     // Primo foreach per settaggio stringhe e output
                     foreach ($hotels as $hotel_index => $hotel)
                     {
@@ -178,13 +203,29 @@
                         }
                         // Completamento dell'output
                         $echo_str .= "</tr>";
-                        // Generazione rigo tabella mediante output
-                        echo $echo_str;
+
+                        $condition1 = (!isset($parking) && !isset($vote));
+                        $condition2 = (isset($parking) && ($hotel["parking"] == $parking_bool) && isset($vote) && ($hotel["vote"] >= $vote));
+                        $condition3 = (isset($parking) && ($hotel["parking"] == $parking_bool) && !isset($vote));
+                        $condition4 = (!isset($parking) && isset($vote) && ($hotel["vote"] >= $vote));
+
+                        if  ($condition1 || $condition2 || $condition3 || $condition4)
+                        {
+                            // Generazione rigo tabella mediante output
+                            echo $echo_str;
+                            $valid_items++;
+                        }
                     }
                     ?>
                 </tboby>
             </table>
-            <span class="p-2 border border-3 bg-warning">Campo "description" non visualizzato poichè ridondante!</span>
+            <?php
+                if ($valid_items != 0)
+                    $message_str = 'Campo "description" non visualizzato poichè ridondante!';
+                else
+                $message_str = 'La ricerca con i filtri impostati non ha prodotto risultati!';
+                echo '<span class="p-2 border border-3 bg-warning">' . $message_str . '</span>';
+            ?>
         </section>
     </main>
     <!-- CDN per Bootstrap 5 -->

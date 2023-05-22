@@ -3,6 +3,7 @@
     // Variabili globali assegnatarie dei parametri di ricerca
     $parking = $_GET["parking"];
     $vote = $_GET["vote"];
+    $searching = $_GET["searching"];
     // Variabili globali utilizzate per contare gli elementi validi (rispondenti ai parametri di ricerca) e per produrre il messaggio di output 
     $valid_items = 0;
     $message_str = "";
@@ -75,6 +76,7 @@
     //     echo "----------------------------------------<br>";
     // }
     // ******************************************************************
+    var_dump($searching);
 ?>
 
 <!DOCTYPE html>
@@ -85,8 +87,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Link a Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!-- Link al foglio di stile -->
-    <link rel="stylesheet" href="./style.css">
+    <style>
+        #vote_input
+        {
+            width: 50px;
+            height: 1.5rem;
+        }
+
+        #fake
+        {
+            display: none;
+        }
+    </style>
     <title>Hotel - PHP</title>
 </head>
 <body>
@@ -96,7 +108,7 @@
     <main class="row m-5">
         <section id="form_section" class="col-3 p-2 border border-3 rounded-3 bg-info">
             <h3 class="text-center text-black-50">Filters</h3>
-            <form id="form_id" action="index.php" method="GET">
+            <form id="form_id" action="index.php" method="GET" onsubmit="set_searching()">
                 <!-- Sotto sezione checkbox e radiobuttons per filtro parcheggio -->
                 <!-- <div class="form-check border border-1 border-dark rounded-2 bg-light"> -->
                     <!-- <input id="parking_check" class="form-check-input mx-1" type="checkbox"> -->
@@ -128,6 +140,7 @@
                         <input id="vote_input" class="form-check-input" type="number" min="0" max="5" step="0.5" name="vote" value = "<?php if (isset($vote)) echo $vote; ?>">
                         <label for="vote_input" class="form-check-label mx-2">Vote</label>
                     </div>
+                    <input id="fake" type="text" name="searching">
                 <!-- </div> -->
                 <!-- Pulsante submit -->
                 <div class="d-flex justify-content-center my-3">
@@ -138,6 +151,9 @@
                 var_dump($parking);
             ?> -->
         </section>
+        <?php
+            if (isset($searching) && $searching == "searching"):
+        ?>
         <section id="table_container" class="col-7 offset-1">
             <!-- Bootstrap table -->
             <table class="table table-dark table-striped">
@@ -239,8 +255,20 @@
                 echo '<span class="p-2 border border-3 bg-warning">' . $message_str . '</span>';
             ?>
         </section>
+        <?php
+            else:
+                echo '<h3 class="my-5 text-center">Settare i filtri di ricerca o semplicemente cliccare sul pulsante per visualizare la tabella</h3>';
+            endif;
+        ?>
     </main>
     <!-- CDN per Bootstrap 5 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+        function set_searching()
+        {
+            let fake_input = document.querySelector("#fake");
+            fake_input.setAttribute("value","searching");
+        }
+    </script>
 </body>
 </html>
